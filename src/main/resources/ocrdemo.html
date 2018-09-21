@@ -1,0 +1,124 @@
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Home Page</title>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//jcrop-cdn.tapmodo.com/v0.9.12/js/jquery.Jcrop.min.js"></script>
+    <link rel="stylesheet" href="//jcrop-cdn.tapmodo.com/v0.9.12/css/jquery.Jcrop.css" type="text/css" />
+    <script type="text/javascript">
+
+        jQuery(function ($) {
+
+            $("#ocrButton").click(function (event) {
+                event.preventDefault();
+                $.ajax(
+                    {
+                        type: 'GET',
+                        url: "${pageContext.servletContext.contextPath}/partialOcr",
+                        data: {
+                            'x1': $('#x1').val(),
+                            'y1': $('#y1').val(),
+                            'width': $('#width').val(),
+                            'height': $('#height').val(),
+                            'imageId': 'Invoice2.png'
+                        },
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        // crossDomain: true,
+                        timeout: 9500,
+                        success: function (data) {
+                            console.log("data: " + data);
+                            $("#ocrResult").val(data);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.status + ' ' + textStatus + '\n ' + jqXHR.responseText);
+                            window.alert(jqXHR.responseText);
+                        }
+                    }
+                );
+            });
+
+            var jcrop_api;
+
+            $('#target').Jcrop({
+                boxWidth: 727,
+                boxHeight: 1000,
+                onChange: showCoords,
+                onSelect: showCoords,
+                onRelease: function () {
+                    $('#coords input').val('');
+                }
+            }, function () {
+                jcrop_api = this;
+            });
+
+            $('#coords').on('change', 'input', function (e) {
+                var x1 = $('#x1').val(), x2 = $('#x2').val(), y1 = $('#y1').val(), y2 = $('#y2').val();
+                jcrop_api.setSelect([x1, y1, x2, y2]);
+            });
+
+        });
+
+        // Simple event handler, called from onChange and onSelect event handlers, as per the Jcrop invocation above
+        function showCoords(c) {
+            $('#x1').val(c.x);
+            $('#y1').val(c.y);
+            $('#x2').val(c.x2);
+            $('#y2').val(c.y2);
+            $('#width').val(c.w);
+            $('#height').val(c.h);
+        };
+
+    </script>
+</head>
+<body>
+
+<table>
+    <tr>
+        <td>
+            <div>
+                <img src="http://localhost:63342/edatablock-ocr/src/main/resources/test-data/1.png" id="target"/>
+            </div>
+        </td>
+        <td valign="top">
+            <input id="ocrButton" type="button" value="OCR"/>
+
+            <br/><br/>
+
+            <textarea id="ocrResult">
+                        ${ocrResult}
+                    </textarea>
+        </td>
+    </tr>
+</table>
+
+<div id="coords" class="coords">
+
+    <div class="inline-labels">
+
+        <label>X1
+            <input type="text" size="4" id="x1" name="x1" />
+        </label>
+        <label>
+            Y1 <input type="text" size="4" id="y1" name="y1" />
+        </label>
+        <label>
+            X2 <input type="text" size="4" id="x2" name="x2" />
+        </label>
+        <label>
+            Y2 <input type="text" size="4" id="y2" name="y2" />
+        </label>
+        <label>
+            W <input type="text" size="4" id="width" name="width" />
+        </label>
+        <label>
+            H <input type="text" size="4" id="height" name="height" />
+        </label>
+
+    </div>
+</div>
+
+
+</body>
+</html>

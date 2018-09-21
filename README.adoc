@@ -1,0 +1,21 @@
+This is an experiment for OCR Engine
+
+hence it is in bad shape for now
+
+This is using tess4j jna wrapper around tesseract . Please follow thee instruction below before using this project
+
+http://tess4j.sourceforge.net/usage.html
+
+To build it
+
+mvn clean install
+
+To run it
+
+java -jar ./target/edatablock-ocr-0.0.1-SNAPSHOT.jar
+
+
+
+
+
+
